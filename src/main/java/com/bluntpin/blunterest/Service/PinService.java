@@ -2,6 +2,7 @@ package com.bluntpin.blunterest.Service;
 
 import com.bluntpin.blunterest.Model.Pin;
 import com.bluntpin.blunterest.Repository.PinRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.net.URI;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PinService {
 
     @Value("${s3.access-key}")
@@ -33,8 +35,10 @@ public class PinService {
     @Value("${s3.storage-url}")
     private String storageURL;
 
-    @Autowired
-    private PinRepository pinRepository;
+
+    private final PinRepository pinRepository;
+
+
     public List<Pin> getAllPins() {
         return pinRepository.findAll();
     }
