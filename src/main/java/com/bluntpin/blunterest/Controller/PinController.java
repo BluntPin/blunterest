@@ -1,20 +1,15 @@
 package com.bluntpin.blunterest.Controller;
 
 import com.bluntpin.blunterest.Model.Pin;
-import com.bluntpin.blunterest.Repository.PinRepository;
 import com.bluntpin.blunterest.Service.PinService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.http.HttpResponse;
-import java.util.List;
+import java.io.IOException;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -26,14 +21,18 @@ public class PinController {
     private final PinService pinService;
 
     @GetMapping("/pins")
-    public List<Pin> getAllPins() {
-        return pinService.getAllPins();
+    public ResponseEntity<?> getAllPins() {
+        return new ResponseEntity<>(pinService.getAllPins(), HttpStatus.OK);
     }
 
-    @PostMapping("/pins")
-    public HttpResponse<?> uploadPin(MultipartFile file) {
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadPin(@RequestParam("file") MultipartFile file, Pin pin) throws IOException {
 //        validateImage(file);
-        pinService.uploadPin(file);
-        return null;
+        try {
+            pinService.uploadPin(file, pin);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

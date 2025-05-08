@@ -3,60 +3,59 @@ package com.bluntpin.blunterest.Service;
 import com.bluntpin.blunterest.Model.Pin;
 import com.bluntpin.blunterest.Repository.PinRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.S3Configuration;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-import java.net.URI;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PinService {
 
-    @Value("${s3.access-key}")
-    private String accessKey;
-
-    @Value("${s3.secret-key}")
-    private String secretKey;
+    private final PinRepository pinRepository;
+    private final S3Client s3Client;
 
     @Value("${s3.bucket-name}")
     private String bucketName;
-
-    @Value("${s3.region}")
-    private String region;
 
     @Value("${s3.storage-url}")
     private String storageURL;
 
 
-    private final PinRepository pinRepository;
-
-
-    public List<Pin> getAllPins() {
+    public List<Pin> getAllPins()
+    {
         return pinRepository.findAll();
     }
 
-    public void uploadPin(MultipartFile file) {
+    public void uploadPin(MultipartFile multipartFile, Pin pin) throws IOException {
+        String filename = "files/" + UUID.randomUUID().toString().replace("-", "") + "_" + multipartFile.getOriginalFilename();
 
-    }
-
-    public S3Client createS3Client() {
-        AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
-        return S3Client.builder()
-                .endpointOverride(URI.create(storageURL))
-                .credentialsProvider(StaticCredentialsProvider.create(credentials))
-                .region(Region.of(region))
-                .serviceConfiguration(S3Configuration.builder()
-                        .pathStyleAccessEnabled(true)
-                        .build())
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(filename)
                 .build();
 
+        s3Client.putObject(putObjectRequest, RequestBody.fromBytes(multipartFile.getBytes()));
+        pin.setImageUrl(generateFileUrl(filename));
+
+        pinRepository.save(pin);
     }
+
+    private String generateFileUrl(String fileKey) {
+        return String.format("https://%s.%s/%s",
+                bucketName,
+                storageURL.replace("https://", ""),
+                fileKey);
+    }
+
 }
