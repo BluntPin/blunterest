@@ -4,10 +4,12 @@ import com.bluntpin.blunterest.DTO.PinDto;
 import com.bluntpin.blunterest.Model.Pin;
 import com.bluntpin.blunterest.Repository.PinRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,8 +20,8 @@ public class PinService {
     private final StorageService storageService;
 
 
-    public List<Pin> getAllPins() {
-        return pinRepository.findAll();
+    public Page<Pin> getAllPins(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+        return pinRepository.findAllById(pageable);
     }
 
     public void uploadPin(MultipartFile multipartFile, PinDto pinDto) {
