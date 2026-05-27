@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RepositoryRestController
 public interface PinRepository extends JpaRepository<Pin, Integer> {
-    Page<Pin> findAllById(Pageable pageable);
+    @Override
+    Page<Pin> findAll(Pageable pageable);
 }

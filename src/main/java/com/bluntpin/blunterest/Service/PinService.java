@@ -21,7 +21,7 @@ public class PinService {
 
 
     public Page<Pin> getAllPins(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        return pinRepository.findAllById(pageable);
+        return pinRepository.findAll(pageable);
     }
 
     public void uploadPin(MultipartFile multipartFile, PinDto pinDto) {
