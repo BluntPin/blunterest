@@ -49,8 +49,8 @@ public class PinService {
 
         pin.setImageKey(uploadResult.imageKey());
         pin.setImageUrl(imageUrl);
-        pin.setTitle(createPinDto.getTitle());
-        pin.setDescription(createPinDto.getDescription());
+        pin.setTitle(createPinDto.title());
+        pin.setDescription(createPinDto.description());
         pin.setImageUrl(imageUrl);
         pin.setCreatedDate(LocalDateTime.now());
         pinRepository.save(pin);
