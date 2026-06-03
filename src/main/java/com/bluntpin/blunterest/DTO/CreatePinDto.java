@@ -1,9 +1,5 @@
 package com.bluntpin.blunterest.DTO;
 
-import lombok.Data;
+public record CreatePinDto(String title, String description) {
 
-@Data
-public class CreatePinDto {
-    private String title;
-    private String description;
 }
