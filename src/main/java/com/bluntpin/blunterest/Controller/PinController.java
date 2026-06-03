@@ -71,7 +71,7 @@ public class PinController {
             throw new IllegalArgumentException("File is too large");
         }
 
-        if (file.getContentType() == null || !file.getContentType().startsWith("image/")) {
+        if (!file.getContentType().startsWith("image/")) {
             throw new IllegalArgumentException("File is not an image");
         }
 

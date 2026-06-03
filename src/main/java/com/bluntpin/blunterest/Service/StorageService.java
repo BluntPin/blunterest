@@ -9,7 +9,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
-import java.net.URLConnection;
 import java.util.UUID;
 
 @Service
@@ -24,9 +23,6 @@ public class StorageService {
         String filename = "files/" + UUID.randomUUID().toString().replace("-", "") + "_" + file.getOriginalFilename();
         String contentType = file.getContentType();
 
-        if (contentType == null) {
-            contentType = URLConnection.guessContentTypeFromName(file.getOriginalFilename());
-        }
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(s3Properties.getBucketName())

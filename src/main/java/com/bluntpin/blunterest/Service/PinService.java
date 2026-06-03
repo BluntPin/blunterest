@@ -40,25 +40,20 @@ public class PinService {
 
     @Transactional
     public void uploadPin(MultipartFile multipartFile, CreatePinDto createPinDto) {
-        UploadResult uploadResult = null;
-        String imageUrl = null;
+        UploadResult uploadResult;
+        String imageUrl;
 
-        try {
-            Pin pin = new Pin();
-            uploadResult = storageService.uploadFile(multipartFile);
-            imageUrl = uploadResult.imageUrl();
+        Pin pin = new Pin();
+        uploadResult = storageService.uploadFile(multipartFile);
+        imageUrl = uploadResult.imageUrl();
 
-            pin.setImageKey(uploadResult.imageKey());
-            pin.setImageUrl(imageUrl);
-            pin.setTitle(createPinDto.getTitle());
-            pin.setDescription(createPinDto.getDescription());
-            pin.setImageUrl(imageUrl);
-            pin.setCreatedDate(LocalDateTime.now());
-            pinRepository.save(pin);
-        } catch (Exception e) {
-
-            throw e;
-        }
+        pin.setImageKey(uploadResult.imageKey());
+        pin.setImageUrl(imageUrl);
+        pin.setTitle(createPinDto.getTitle());
+        pin.setDescription(createPinDto.getDescription());
+        pin.setImageUrl(imageUrl);
+        pin.setCreatedDate(LocalDateTime.now());
+        pinRepository.save(pin);
     }
 
     @Transactional

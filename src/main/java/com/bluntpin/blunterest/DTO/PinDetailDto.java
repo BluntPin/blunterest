@@ -2,8 +2,6 @@ package com.bluntpin.blunterest.DTO;
 
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class PinDetailDto {
     private long id;
