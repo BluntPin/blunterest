@@ -20,10 +20,10 @@ public class StorageService {
     private final S3Client s3Client;
 
 
-    public String uploadFile(MultipartFile file) {
+    public UploadResult uploadFile(MultipartFile file) {
         String filename = "files/" + UUID.randomUUID().toString().replace("-", "") + "_" + file.getOriginalFilename();
-
         String contentType = file.getContentType();
+
         if (contentType == null) {
             contentType = URLConnection.guessContentTypeFromName(file.getOriginalFilename());
         }
@@ -41,13 +41,13 @@ public class StorageService {
             throw new RuntimeException(e);
         }
 
-        return generateFileUrl(filename);
+        return new UploadResult(generateFileUrl(filename), filename);
     }
 
-    public void deleteFileByUrl(String fileUrl) {
+    public void deleteFileByUrl(String fileKey) {
         s3Client.deleteObject(b -> b
                 .bucket(s3Properties.getBucketName())
-                .key(fileUrl));
+                .key(fileKey));
     }
 
 

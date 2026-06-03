@@ -4,7 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -16,10 +19,14 @@ public class Pin {
     private String title;
     private String description;
     private String imageUrl;
-//    TO-DO:
+    private String imageKey;
+    private LocalDateTime createdDate;
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private int likesAmount = 0;
+
 //    private List<String> tags;
-//    private LocalDateTime createdAt;
-//    private User user;
+//    private User pinAuthor;
+//    private List<String> comments;
 //    private boolean isPublic;
 }
 
